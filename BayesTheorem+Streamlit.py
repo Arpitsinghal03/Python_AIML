@@ -1,5 +1,30 @@
 import streamlit as st
 import pandas as pd
+import time
+import threading
+
+# Auto-refresh function to keep the app active (runs in background)
+def keep_alive():
+    """
+    Function to ping the app every 5 minutes to keep it active
+    """
+    while True:
+        try:
+            # Wait for 5 minutes (300 seconds)
+            time.sleep(300)
+            
+            # Refresh the app by triggering a rerun
+            st.rerun()
+            
+        except Exception as e:
+            # If there's an error, continue anyway
+            continue
+
+# Start the keep-alive thread only once
+if 'keep_alive_started' not in st.session_state:
+    st.session_state.keep_alive_started = True
+    keep_alive_thread = threading.Thread(target=keep_alive, daemon=True)
+    keep_alive_thread.start()
 
 # title with clickable link
 st.markdown(
